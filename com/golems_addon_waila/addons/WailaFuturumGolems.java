@@ -44,14 +44,14 @@ public class WailaFuturumGolems implements IWailaEntityProvider
 	@Optional.Method(modid = "golems_addon_futurum")
 	public List<String> getWailaBody(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,	IWailaConfigHandler config) 
 	{
-		if(config.getConfig("show_special_abilities_tip"))
+		if(config.getConfig("extragolems.show_special_abilities_tip"))
 		{
 			/////// BEGIN SPECIFIC CLASS CHECKS ////////
 
 			// add planting to tip if possible
 			if(entity instanceof com.golems_addon_futurum.entity.EntityMushroomGolem)
 			{
-				String sPlant = EnumChatFormatting.RED + trans("tooltip.plants_shrooms");
+				String sPlant = EnumChatFormatting.GREEN + trans("tooltip.plants_shrooms");
 				if(FuturumConfig.ALLOW_MUSHROOM_SPECIAL) currenttip.add(sPlant);
 			}
 

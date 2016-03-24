@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.golems.entity.GolemBase;
 import com.golems.entity.GolemMultiTextured;
-import com.golems_addon_tconstruct.main.TCGConfig;
+import com.golems_addon_tconstruct.main.TinkersConfig;
 
 import cpw.mods.fml.common.Optional;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -45,7 +45,7 @@ public class WailaTinkersGolems implements IWailaEntityProvider
 	@Optional.Method(modid = "golems_addon_tconstruct")
 	public List<String> getWailaBody(Entity entity, List<String> currenttip, IWailaEntityAccessor accessor,	IWailaConfigHandler config) 
 	{
-		if(config.getConfig("show_special_abilities_tip"))
+		if(config.getConfig("extragolems.show_special_abilities_tip"))
 		{
 			/////// BEGIN SPECIFIC CLASS CHECKS ////////
 
@@ -60,7 +60,7 @@ public class WailaTinkersGolems implements IWailaEntityProvider
 			if(entity instanceof com.golems_addon_tconstruct.entity.EntityGlueGolem)
 			{
 				String sSlow = EnumChatFormatting.WHITE + trans("tooltip.slows_creatures");
-				if(TCGConfig.ALLOW_GLUE_SPECIAL) currenttip.add(sSlow);
+				if(TinkersConfig.ALLOW_GLUE_SPECIAL) currenttip.add(sSlow);
 			}
 			
 			// add speed to tip if possible
@@ -74,7 +74,7 @@ public class WailaTinkersGolems implements IWailaEntityProvider
 			if(entity instanceof com.golems_addon_tconstruct.entity.EntitySearedGolem)
 			{
 				String sFire = EnumChatFormatting.RED + trans("tooltip.lights_mobs_on_fire");
-				if(TCGConfig.ALLOW_SEARED_SPECIAL) currenttip.add(sFire);
+				if(TinkersConfig.ALLOW_SEARED_SPECIAL) currenttip.add(sFire);
 			}
 			
 			// add knockback to tip if possible
@@ -93,7 +93,7 @@ public class WailaTinkersGolems implements IWailaEntityProvider
 				}
 				
 				String sKnock = color + trans("tooltip.has_knockback");
-				if(TCGConfig.ALLOW_SLIME_SPECIAL) currenttip.add(sKnock);
+				if(TinkersConfig.ALLOW_SLIME_SPECIAL) currenttip.add(sKnock);
 			}
 		}
 

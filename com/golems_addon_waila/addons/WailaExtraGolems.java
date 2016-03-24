@@ -11,14 +11,12 @@ import com.golems.entity.EntityLapisGolem;
 import com.golems.entity.EntityLeafGolem;
 import com.golems.entity.EntityMelonGolem;
 import com.golems.entity.EntityNetherBrickGolem;
+import com.golems.entity.EntityRedstoneGolem;
 import com.golems.entity.EntitySpongeGolem;
 import com.golems.entity.EntityTNTGolem;
 import com.golems.entity.GolemBase;
 import com.golems.entity.GolemLightProvider;
-import com.golems.entity.GolemMultiTextured;
 import com.golems.main.Config;
-import com.golems_addon_futurum.entity.EntityMushroomGolem;
-import com.golems_addon_futurum.entity.EntitySlimeGolem;
 
 import cpw.mods.fml.common.Optional;
 import mcp.mobius.waila.api.IWailaConfigHandler;
@@ -29,6 +27,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -76,31 +75,30 @@ public class WailaExtraGolems implements IWailaEntityProvider
 			if(config.getConfig("show_attack_damage_tip")) currenttip.add(sAttack);
 			
 			// add right-click-texture to tip if possible
-			if(entity instanceof GolemMultiTextured)
+			if(golem.doesInteractChangeTexture() && config.getConfig("extragolems.show_multitexture_tip"))
 			{
-				String sTexture = EnumChatFormatting.BLUE + trans("tooltip.click_change_texture");
-				if(config.getConfig("extragolems.show_multitexture_tip")) currenttip.add(sTexture);
+				String sColor = EnumChatFormatting.BLUE + trans("tooltip.click_change_texture");
+				currenttip.add(sColor);
 			}
 			
 			// add fire immunity to tip if possible
-			if(config.getConfig("extragolems.show_fireproof_tip") && entity.isImmuneToFire() && !(entity instanceof EntityBedrockGolem))
+			if(config.getConfig("extragolems.show_fireproof_tip") && golem.isImmuneToFire() && !(golem instanceof EntityBedrockGolem))
 			{
 				String sFire = EnumChatFormatting.GOLD + trans("tooltip.is_fireproof");
 				currenttip.add(sFire);
 			}
 			
 			// add knockback resist to tip if possible
-			if(config.getConfig("extragolems.show_knockback_resistance_tip") &&
-			  ((GolemBase) entity).getEntityAttribute(SharedMonsterAttributes.knockbackResistance).getBaseValue() >= 0.9D)
+			if(config.getConfig("extragolems.show_knockback_resistance_tip") && golem.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).getBaseValue() >= 0.9D)
 			{
 				String sResist = EnumChatFormatting.GRAY + trans("tooltip.knockback_resist");
 				currenttip.add(sResist);
 			}
 
-			if(config.getConfig("show_special_abilities_tip"))
+			if(config.getConfig("extragolems.show_special_abilities_tip"))
 			{
 				// add glowing to tip if possible
-				if(entity instanceof GolemLightProvider)
+				if(golem instanceof GolemLightProvider)
 				{
 					String sLight = EnumChatFormatting.YELLOW + trans("tooltip.lights_area");
 					currenttip.add(sLight);
@@ -109,80 +107,86 @@ public class WailaExtraGolems implements IWailaEntityProvider
 				/////// BEGIN SPECIFIC CLASS CHECKS ////////
 
 				// add indestructible to tip if possible
-				if(entity instanceof EntityBedrockGolem)
+				if(golem instanceof EntityBedrockGolem)
 				{
 					String sIndestructible = EnumChatFormatting.WHITE + trans("tooltip.indestructible");
 					currenttip.add(sIndestructible);
 				}
 
 				// add potion effect to tip if possible
-				if(entity instanceof EntityBookshelfGolem)
+				if(golem instanceof EntityBookshelfGolem)
 				{
 					String sPotion = EnumChatFormatting.LIGHT_PURPLE + trans("tooltip.grants_self_potion_effects");
 					if(Config.ALLOW_BOOKSHELF_SPECIAL) currenttip.add(sPotion);
 				}
 
 				// add blinding effect to tip if possible
-				if(entity instanceof EntityCoalGolem)
+				if(golem instanceof EntityCoalGolem)
 				{
 					String sPotion = EnumChatFormatting.GRAY + trans("tooltip.blinds_creatures");
 					if(Config.ALLOW_COAL_SPECIAL) currenttip.add(sPotion);
 				}
 
 				// add teleporting to tip if possible
-				if(entity instanceof EntityEndstoneGolem)
+				if(golem instanceof EntityEndstoneGolem)
 				{
 					String sTeleport = EnumChatFormatting.DARK_AQUA + trans("tooltip.can_teleport");
 					if(Config.ALLOW_ENDSTONE_SPECIAL) currenttip.add(sTeleport);
 				}
 
 				// add freezing to tip if possible
-				if(entity instanceof EntityIceGolem)
+				if(golem instanceof EntityIceGolem)
 				{
 					String sFreeze = EnumChatFormatting.AQUA + trans("tooltip.freezes_blocks");
 					if(Config.ALLOW_ICE_SPECIAL) currenttip.add(sFreeze);
 				}
 
 				// add potion effects to tip if possible
-				if(entity instanceof EntityLapisGolem)
+				if(golem instanceof EntityLapisGolem)
 				{
 					String sPotion = EnumChatFormatting.LIGHT_PURPLE + trans("tooltip.attacks_use_potion_effects");
 					if(Config.ALLOW_LAPIS_SPECIAL) currenttip.add(sPotion);
 				}
 
 				// add potion effects to tip if possible
-				if(entity instanceof EntityLeafGolem)
+				if(golem instanceof EntityLeafGolem && golem.getActivePotionEffect(Potion.regeneration) != null)
 				{
 					String sPotion = EnumChatFormatting.DARK_GREEN + trans("tooltip.has_regen_1");
 					if(Config.ALLOW_LEAF_SPECIAL) currenttip.add(sPotion);
 				}
 
 				// add planting to tip if possible
-				if(entity instanceof EntityMelonGolem)
+				if(golem instanceof EntityMelonGolem)
 				{
 					String sPlant = EnumChatFormatting.GREEN + trans("tooltip.plants_flowers");
 					if(Config.ALLOW_MELON_SPECIAL) currenttip.add(sPlant);
 				}
 
-
 				// add netherbrick specials to tip if possible
-				if(entity instanceof EntityNetherBrickGolem)
+				if(golem instanceof EntityNetherBrickGolem)
 				{
 					String sFire = EnumChatFormatting.RED + trans("tooltip.lights_mobs_on_fire");
 					String sLava = EnumChatFormatting.RED + trans("tooltip.slowly_melts") + " " + trans("tile.stonebrick.name");
 					if(Config.ALLOW_NETHERBRICK_SPECIAL_FIRE) currenttip.add(sFire);
 					if(Config.ALLOW_NETHERBRICK_SPECIAL_LAVA) currenttip.add(sLava);
 				}
-
+				
+				// add redstone power to tip if possible
+				if(golem instanceof EntityRedstoneGolem)
+				{
+					String sRed = EnumChatFormatting.RED + trans("tooltip.emits_redstone_signal");
+					if(Config.ALLOW_REDSTONE_SPECIAL) currenttip.add(sRed);
+				}
+				
 				// add water-drying to tip if possible
-				if(entity instanceof EntitySpongeGolem)
+				if(golem instanceof EntitySpongeGolem)
 				{
 					String sWater = EnumChatFormatting.YELLOW + trans("tooltip.absorbs_water");
 					if(Config.ALLOW_SPONGE_SPECIAL) currenttip.add(sWater);
 				}
 
 				// add boom to tip if possible
-				if(entity instanceof EntityTNTGolem)
+				if(golem instanceof EntityTNTGolem)
 				{
 					String sBoom = EnumChatFormatting.RED + trans("tooltip.explodes");
 					if(Config.ALLOW_SPONGE_SPECIAL) currenttip.add(sBoom);

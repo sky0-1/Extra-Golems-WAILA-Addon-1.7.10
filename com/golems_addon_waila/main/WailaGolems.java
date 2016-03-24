@@ -11,7 +11,7 @@ public class WailaGolems
 	public static final String MODID = "golems_addon_waila";
 	public static final String DEPENDENCY_MODID = "golems";
 	public static final String NAME = "Extra Golems Waila Addon";
-	public static final String VERSION = "1.02";
+	public static final String VERSION = "1.03";
 	public static final String MCVERSION = "1.7.10";
 	
 	@Mod.Instance(WailaGolems.MODID)
